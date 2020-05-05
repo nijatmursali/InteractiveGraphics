@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
 
+
 <script id="vertex-shader" type="x-shader/x-vertex">
 #version 300 es
 
-in  vec4 aPosition;
-in  vec4 aColor;
+in vec4 aPosition;
+in vec4 aColor;
+
 out vec4 vColor;
 
-void main()
+void
+main()
 {
-    vColor = aColor;
     gl_Position = aPosition;
+    vColor = aColor;
+    gl_PointSize = 10.0;
 }
 </script>
 
@@ -27,16 +31,15 @@ void
 main()
 {
     fColor = vColor;
-
 }
 </script>
 
-<script type="text/javascript" src="../Common/InitShaders.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MVnew.js"></script>
-<script type="text/javascript" src="homework1.js"></script>
+<script type="text/javascript" src="squarem.js"></script>
 
 <body>
-<canvas id="gl-canvas" width="1024" height="1024">
+<canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 </body>

@@ -4,13 +4,13 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 #version 300 es
 
-in  vec4 aPosition;
-in  vec4 aColor;
-out vec4 vColor;
+in vec4 aPosition;
+in vec2 aTexCoord;
+out vec2 vTexCoord;
 
 void main()
 {
-    vColor = aColor;
+    vTexCoord = aTexCoord.st;
     gl_Position = aPosition;
 }
 </script>
@@ -20,23 +20,23 @@ void main()
 
 precision mediump float;
 
-in vec4 vColor;
+in vec2 vTexCoord;
 out vec4 fColor;
 
-void
-main()
-{
-    fColor = vColor;
+uniform sampler2D textureMap;
 
+void main()
+{
+    fColor = texture( textureMap, vTexCoord );
 }
 </script>
 
-<script type="text/javascript" src="../Common/InitShaders.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MVnew.js"></script>
-<script type="text/javascript" src="homework1.js"></script>
+<script type="text/javascript" src="mandelbrot1.js"></script>
 
 <body>
-<canvas id="gl-canvas" width="1024" height="1024">
+<canvas id="gl-canvas" width="1024"" height="1024">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 </body>

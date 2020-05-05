@@ -4,14 +4,16 @@
 <script id="vertex-shader" type="x-shader/x-vertex">
 #version 300 es
 
-in  vec4 aPosition;
-in  vec4 aColor;
-out vec4 vColor;
+in vec4 aPosition;
 
 void main()
 {
-    vColor = aColor;
-    gl_Position = aPosition;
+mat4 scale = mat4( 0.3, 0.0, 0.0, 0.0,
+		    0.0,  0.3, 0.0, 0.0,
+		    0.0,  0.0, 0.3, 0.0,
+		    0.0,  0.0, 0.0, 1.0 );
+
+    gl_Position = scale*aPosition;
 }
 </script>
 
@@ -20,23 +22,22 @@ void main()
 
 precision mediump float;
 
-in vec4 vColor;
 out vec4 fColor;
 
-void
-main()
+void main()
 {
-    fColor = vColor;
-
+    fColor = vec4(1.0, 0.0, 0.0, 1.0);;
 }
 </script>
 
 <script type="text/javascript" src="../Common/InitShaders.js"></script>
 <script type="text/javascript" src="../Common/MVnew.js"></script>
-<script type="text/javascript" src="homework1.js"></script>
+<script type="text/javascript" src="vertices.js"></script>
+<script type="text/javascript" src="patches.js"></script>
+<script type="text/javascript" src="teapot1.js"></script>
 
 <body>
-<canvas id="gl-canvas" width="1024" height="1024">
+<canvas id="gl-canvas" width="512" height="512">
 Oops ... your browser doesn't support the HTML5 canvas element
 </canvas>
 </body>

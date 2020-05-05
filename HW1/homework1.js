@@ -16,10 +16,7 @@ var flag = true;
 var pointsArray = [];
 var colorsArray = [];
 
-
-//replace cube with more complex shape 
-
-var vertices = [ //work on these parameters for checking for vertices and etc
+var vertices = [
     vec4( -0.5, -0.5,  0.5, 1.0 ),
     vec4( -0.5,  0.5,  0.5, 1.0 ),
     vec4( 0.5,  0.5,  0.5, 1.0 ),
@@ -99,9 +96,8 @@ window.onload = function init() {
     gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
 
     var vColor = gl.getAttribLocation( program, "aColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 ); //1. attribute location 2. number of elements per attribute 3. type of elements,
-    gl.enableVertexAttribArray( vColor );                      //4. size of individual vertex, 5. offset from beginning of single vertext to this attibute
-     
+    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vColor );
 
     var vBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer);
