@@ -1,43 +1,632 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOMEWORK 1 - Nijat Mursali</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    /* Customize the label (the container) */
+    #rotateobj,
+    #cartoontoggle,
+    #texturetoggle {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 40px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    #rotateobj input,
+    #cartoontoggle input,
+    #texturetoggle input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark,
+    .checkmark1,
+    .checkmark2 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #eee;
+    }
+
+    /* On mouse-over, add a grey background color */
+    #rotateobj:hover input~.checkmark,
+    #cartoontoggle:hover input~.checkmark1,
+    #texturetoggle:hover input~.checkmark2 {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    #rotateobj input:checked~.checkmark,
+    #cartoontoggle input:checked~.checkmark1,
+    #texturetoggle input:checked~.checkmark2 {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after,
+    .checkmark1:after,
+    .checkmark2:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    #rotateobj input:checked~.checkmark:after,
+    #cartoontoggle input:checked~.checkmark1:after,
+    #texturetoggle input:checked~.checkmark2:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    #rotateobj .checkmark:after,
+    #cartoontoggle .checkmark1:after,
+    #texturetoggle .checkmark2:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+
+    .PrixMin {
+        float: left;
+        color: #ff4400;
+        font-size: 19px;
+        margin-right: 5px;
+    }
+
+    .selecteurPrix {
+        padding-top: 15px;
+    }
+
+
+    .valeurPrix {
+        position: absolute;
+        top: -59px;
+        left: 177px;
+    }
+
+    .range-slider {
+        position: relative;
+        width: 450px;
+        float: left;
+        margin-right: 5px;
+    }
+
+    .range-slider .input-range {
+        -webkit-appearance: none;
+        width: 449px;
+        height: 5px;
+        border-radius: 5px;
+        background: #ccc;
+        outline: none;
+    }
+
+    .range-slider .input-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #FD5050;
+        cursor: pointer;
+        -webkit-transition: background .15s ease-in-out;
+        transition: background .15s ease-in-out;
+    }
+
+    .range-slider .input-range::-webkit-slider-thumb:hover {
+        background: #FD5050;
+    }
+
+    .range-slider .input-range:active::-webkit-slider-thumb {
+        background: #FD5050;
+    }
+
+    .range-slider .input-range::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border: 0;
+        border-radius: 50%;
+        background: #FD5050;
+        cursor: pointer;
+        -webkit-transition: background .15s ease-in-out;
+        transition: background .15s ease-in-out;
+    }
+
+    .range-slider .input-range::-moz-range-thumb:hover {
+        background: #FD5050;
+    }
+
+    .range-slider .input-range:active::-moz-range-thumb {
+        background: #FD5050;
+    }
+
+    .range-slider .range-value {
+        display: inline-block;
+        position: relative;
+        width: 83px;
+        color: #fff;
+        font-size: 23px;
+        line-height: 32px;
+        text-align: center;
+        border-radius: 3px;
+        background: #FD5050;
+        padding: 5px 10px;
+        margin-left: 7px;
+    }
+
+    .range-slider .range-value:after {
+        position: absolute;
+        top: 38px;
+        left: 40px;
+        width: 0;
+        height: 0;
+        border-top: 7px solid transparent;
+        border-right: 7px solid #FD5050;
+        border-bottom: 7px solid transparent;
+        content: '';
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
+
+    ::-moz-range-track {
+        background: #ccc;
+        border: 0;
+    }
+
+    input::-moz-focus-inner {
+        border: 0;
+    }
+
+        /* BUTTONS */
+
+        .button {
+        font: normal 500 16px/20px;
+        font-family: 'Roboto', sans-serif;
+        padding: .8rem 2.2rem;
+        position: relative;
+        border: 3px solid transparent;
+        border-radius: 4px;
+    }
+
+    .button.primary-button {
+        background: linear-gradient(90deg, #845EC2 0%, #242582 100%);
+        background-clip: padding-box;
+        color: whitesmoke;
+        transition: background .6s ease;
+        box-shadow: 0px 10px 30px rgba(57, 56, 61, 0.205);
+    }
+
+    .button.primary-button:hover {
+        background: whitesmoke;
+        background-clip: padding-box;
+        color: black;
+    }
+
+    .button.primary-button::after {
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        bottom: -2px;
+        right: -2px;
+        background: linear-gradient(90deg, #845EC2 0%, #242582 100%);
+        content: ' ';
+        z-index: -1;
+        border-radius: 4px;
+    }
+</style>
+
 <script id="vertex-shader" type="x-shader/x-vertex">
-#version 300 es
+    #version 300 es
+
+
+in vec4 aColor;
 
 in  vec4 aPosition;
-in  vec4 aColor;
+in  vec3 aNormal;
+in vec2 aTexCoord;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform mat4 uRotationMatrix, uSpotRotationMatrix;
+
+uniform vec4 uspotLightPosition, uoneDirLightPosition;
+uniform bool uRflag;
+
+vec3 spotpos, pos;
+
+out vec3 spotN, spotL, spotE, spotlightpos;
+out vec3 onedirN, onedirL, onedirE, onedirlightpos;
+out vec2 vTexCoord;
+
 out vec4 vColor;
 
 void main()
 {
+    // One Directional Light vectors
+    pos = -(uModelViewMatrix * aPosition).xyz;
+    onedirN = normalize((uModelViewMatrix*vec4(aNormal,0)).xyz);
+ 
+    vec3 onedirlightpos = (uRotationMatrix * uoneDirLightPosition).xyz;
+
+    onedirL = normalize(onedirlightpos - pos);
+    onedirE = normalize(-pos); 
+
+    // Spotlight vectors
+    if (uRflag) {
+        spotpos = -(uModelViewMatrix * aPosition).xyz;
+        spotN = normalize((uModelViewMatrix*vec4(aNormal,0)).xyz);
+    }
+    else {
+        spotpos = -( uModelViewMatrix * aPosition).xyz;
+        spotN = normalize((uProjectionMatrix * uModelViewMatrix*vec4(aNormal,0)).xyz);
+    }
+
+    if (uRflag) {
+        spotlightpos = ( uSpotRotationMatrix * uspotLightPosition).xyz;
+    }
+    else {
+        spotlightpos = ( uSpotRotationMatrix * uspotLightPosition).xyz;
+    }
+   
+    spotL = normalize(spotlightpos - spotpos);
+    spotE = normalize(-spotpos); 
+
     vColor = aColor;
-    gl_Position = aPosition;
+    vTexCoord = aTexCoord;
+
+    if (uRflag) {
+        gl_Position = uModelViewMatrix *aPosition; 
+    }
+    else {
+        gl_Position = uProjectionMatrix * uModelViewMatrix *aPosition;
+    }
 }
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-#version 300 es
+    #version 300 es
 
 precision mediump float;
-
 in vec4 vColor;
+uniform vec4 uOneDirAmbientProduct, uOneDirDiffuseProduct, uOneDirSpecularProduct;
+uniform vec4 uSpotAmbientProduct, uSpotDiffuseProduct, uSpotSpecularProduct;
+uniform vec4 uglobalAmbientProduct;
+
+uniform float uShininess;
+uniform float lCutOff;
+uniform bool ucartoonflag, utextureflag;
+
+uniform sampler2D uTextureMap;
+
+vec4 Ci, Cs;
+vec4 ambient, diffuse, specular;
+vec4 spotCartoonShade, onedirCartoonShade;
+
+in vec3 spotN, spotL, spotE, spotlightpos;
+in vec3 onedirN, onedirL, onedirE, onedirlightpos;
+in vec2 vTexCoord;
 out vec4 fColor;
 
-void
-main()
+void main()
 {
-    fColor = vColor;
+    // One Directional Light Computation
+    vec3 onedirH = normalize(onedirL + onedirE);
+
+    float onedirKd=max(dot(onedirL, onedirN),0.0);    
+    float onedirKs=pow(max(dot(onedirN, onedirH),0.0), uShininess);
+    vec4 oneDirambient = uOneDirAmbientProduct;
+    vec4 oneDirposdiffuse = onedirKd*uOneDirDiffuseProduct;
+    vec4 oneDirposspecular = onedirKs*uOneDirSpecularProduct;   
+    if(dot(onedirL, onedirN)<0.0){
+        oneDirposspecular = vec4(0.0,0.0,0.0,1.0);
+    }
+
+    // Spotlight Computation
+    vec3 spotH = normalize(spotN + spotE);
+
+    float Kd=max(dot(spotL, spotN),0.0);    
+    float Ks=pow(max(dot(spotN, spotH),0.0), uShininess);
+
+    vec4 spotDirambient = uSpotAmbientProduct;
+    vec4 spotDirposdiffuse = Kd*uSpotDiffuseProduct;
+    vec4 spotDirposspecular = Ks*uSpotSpecularProduct;   
+    if(dot(spotL, spotN)<0.0){
+        spotDirposspecular = vec4(0.0,0.0,0.0,1.0);
+    }
+    float dotdir = dot(normalize(spotL + spotE), -spotlightpos);
+    
+    if (dotdir >= lCutOff) {
+        ambient =  oneDirambient + spotDirambient;
+        diffuse =  oneDirposdiffuse + spotDirposdiffuse;
+        specular = oneDirposspecular + spotDirposspecular; 
+        
+        if (max(dot(spotL, spotN), 0.0) >= 0.5) {spotCartoonShade =  uSpotAmbientProduct + uSpotDiffuseProduct;}
+        else {spotCartoonShade =  uSpotAmbientProduct;}
+
+        if (max(dot(onedirL, onedirN), 0.0) >= 0.5) {onedirCartoonShade =  uOneDirAmbientProduct + uOneDirDiffuseProduct;}
+        else {onedirCartoonShade =  uOneDirAmbientProduct;}
+
+        spotCartoonShade = spotCartoonShade + uglobalAmbientProduct;
+        onedirCartoonShade = onedirCartoonShade + uglobalAmbientProduct;
+
+    }
+    else {
+        ambient =  oneDirambient;
+        diffuse = oneDirposdiffuse;
+        specular = oneDirposspecular; 
+        
+        if (max(dot(onedirL, onedirN), 0.0) >= 0.5) {onedirCartoonShade = uglobalAmbientProduct + uOneDirAmbientProduct + uOneDirDiffuseProduct;}
+        else {onedirCartoonShade = uglobalAmbientProduct + uOneDirAmbientProduct;}
+        
+        spotCartoonShade = vec4(0.0, 0.0, 0.0, 0.0);
+
+    }
+
+    if(utextureflag) {
+        fColor = (texture(uTextureMap, vTexCoord)+ ambient + specular+diffuse - 0.7) - vec4(0.0, 0.0, 0.0, 1.0);
+        fColor.a = 1.0;
+    }
+    else if (ucartoonflag) {
+        fColor = spotCartoonShade + onedirCartoonShade;
+        fColor.a = 1.0;
+    }
+    else {
+        fColor = ambient + diffuse + specular;
+        fColor *= vColor;
+        fColor.a = 1.0;
+    }
 
 }
 </script>
 
-<script type="text/javascript" src="../Common/InitShaders.js"></script>
-<script type="text/javascript" src="../Common/MVnew.js"></script>
+<script type="text/javascript" src="./js/InitShaders.js"></script>
+<script type="text/javascript" src="./js/MVnew.js"></script>
 <script type="text/javascript" src="homework1.js"></script>
 
 <body>
-<canvas id="gl-canvas" width="1024" height="1024">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
+
+    <div class="row">
+        <div class="col">
+            <div class="row" style="padding: 50px;">
+                <div class="col-5">
+                    <canvas id="gl-canvas" width="512" height="512">
+                        Oops ... your browser doesn't support the HTML5 canvas element
+                    </canvas>
+                </div>
+                <div class="col-3">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home"
+                            role="tab" aria-controls="v-pills-home" aria-selected="true">Rotation</a>
+                        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile"
+                            role="tab" aria-controls="v-pills-profile" aria-selected="false">Position</a>
+                        <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages"
+                            role="tab" aria-controls="v-pills-messages" aria-selected="false">Lights</a>
+                        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings"
+                            role="tab" aria-controls="v-pills-settings" aria-selected="false">Cartoon Shader</a>
+                        <a class="nav-link" id="v-pills-test-tab" data-toggle="pill" href="#v-pills-test" role="tab"
+                            aria-controls="v-pills-test" aria-selected="false">Texturing</a>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="col-4">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                            aria-labelledby="v-pills-home-tab">
+                            <p class="h1"> Rotation Toggle Button </p>
+                            <label id="rotateobj">
+                                <input type="checkbox"><span class="checkmark"></span>
+                            </label>
+                            <button id="xObjButton" class="btn button primary-button mr-4 text-uppercase">Rotate
+                                X</button>
+                            <button id="yObjButton" class="btn button primary-button mr-4 text-uppercase">Rotate
+                                Y</button>
+                            <button id="zObjButton" class="btn button primary-button mr-4 text-uppercase">Rotate
+                                Z</button>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                            aria-labelledby="v-pills-profile-tab">
+                            <p class="h1"> Perspective Position </p>
+
+                                <div class="col">
+                                    <button class="btn button primary-button text-uppercase" id="incNear">Increase Near</button>
+                                    <button class="btn button primary-button text-uppercase" id="decNear">Decrease Near</button>
+                                </div>
+
+                                <div class="col" style="padding-top: ;">
+                                    <button class="btn button primary-button text-uppercase" id="incFar" style="padding-left: 49px;">Increase Far</button>
+                                    <button class="btn button primary-button text-uppercase" id="decFar" style="padding-left: 48px;">Decrease Far</button>
+                                </div>
+                                <!-- <div class="selecteurPrix">
+                                    <p class="h4">Far</p>
+                                    <div class="PrixMin">0.01</div>
+                                    <div class="range-slider">
+                                        <input class="input-range" id="incFar" type="range" min="0.01" max="3.0"
+                                            step="0.01" value="0.1">
+                                    </div>
+                                    <div class="PrixMin">+3</div>
+                                </div> -->
+
+                                <div class="selecteurPrix">
+                                    <p class="h4">Field of View</p>
+                                    <div class="PrixMin">+10</div>
+                                    <div class="range-slider">
+                                        <input class="input-range" id="incFOV" type="range" min="10" max="120"
+                                            step="5" value="45">
+                                    </div>
+                                    <div class="PrixMin">+120</div>
+                                </div>
+
+
+                            <p class="h1" style="margin-top: 20px; margin-bottom: 10px;"> Viewer Position </p>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Theta</p>
+                                <div class="PrixMin">0</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="incTheta" type="range" min="0.0" max="360.0"
+                                        step="10" value="2">
+                                </div>
+                                <div class="PrixMin">+360</div>
+                            </div>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Phi</p>
+                                <div class="PrixMin">0</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="incPhi" type="range" min="0" max="360.0"
+                                        step="10" value="2">
+                                </div>
+                                <div class="PrixMin">+360</div>
+                            </div>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Radius</p>
+                                <div class="PrixMin">0</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="incRad" type="range" min="0.0" max="20.0"
+                                        step="0.1" value="2">
+                                </div>
+                                <div class="PrixMin">+20</div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel"
+                            aria-labelledby="v-pills-messages-tab">
+
+                            <p class="h1"> Light Position</p>
+
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Rotation X</p>
+                                <div class="PrixMin">-180</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="lightx" type="range" min="-180.0" max="180.0"
+                                        step="0.1" value="4">
+                                </div>
+                                <div class="PrixMin">+180</div>
+                            </div>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Rotation Y</p>
+                                <div class="PrixMin">-180</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="lighty" type="range" min="-180.0" max="180.0"
+                                        step="0.1" value="4">
+                                </div>
+                                <div class="PrixMin">+180</div>
+                            </div>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Rotation Z</p>
+                                <div class="PrixMin">-180</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="lightz" type="range" min="-180.0" max="180.0"
+                                        step="0.1" value="4">
+                                </div>
+                                <div class="PrixMin">+180</div>
+                            </div>
+
+                            <p class="h1"> Spotlight Position </p>
+                            <div class="selecteurPrix">
+                                <p class="h4">Rotation X</p>
+                                <div class="PrixMin">-180</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="spotlightx" type="range" min="-180.0" max="180.0"
+                                        step="0.1" value="4">
+                                </div>
+                                <div class="PrixMin">+180</div>
+                            </div>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Rotation Y</p>
+                                <div class="PrixMin">-180</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="spotlighty" type="range" min="-180.0" max="180.0"
+                                        step="0.1" value="4">
+                                </div>
+                                <div class="PrixMin">+180</div>
+                            </div>
+
+                            <div class="selecteurPrix">
+                                <p class="h4">Limit</p>
+                                <div class="PrixMin">0</div>
+                                <div class="range-slider">
+                                    <input class="input-range" id="limit" type="range" min="0.0" max="90.0" step="0.1"
+                                        value="4">
+                                </div>
+                                <div class="PrixMin">+90</div>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                            aria-labelledby="v-pills-settings-tab">
+                            <p class="h1"> Cartoon Shading Toggle Button </p>
+                            <label class="switch" id="cartoontoggle">
+                                <input type="checkbox"><span class="checkmark1"></span>
+                            </label>
+                            <br />
+
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-test" role="tabpanel" aria-labelledby="v-pills-test-tab">
+                            <p class="h1"> Texture Toggle Button </p>
+                            <label class="switch" id="texturetoggle">
+                                <input type="checkbox"><span class="checkmark2"></span>
+                            </label>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <img id="texImage" src="./images/textures.jpg" hidden></img>
+
 </body>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+</script>
+
+
 </html>
