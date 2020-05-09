@@ -268,6 +268,8 @@ out vec3 SpotlightN, SpotLightL, SpotLightE, spotlightpos;
 out vec3 DirectionalLightN, DirectionalLightL, DirectionalLightE, DirectionalLightPosition;
 out vec2 vTexCoord;
 
+out vec4 vNormal;
+
 out vec4 vColor; //getting the colors 
 
 void main()
@@ -301,6 +303,7 @@ void main()
     SpotLightL = normalize(spotlightpos - SpotlightPosition);
     SpotLightE = normalize(-SpotlightPosition); 
 
+    //vNormal = aNormal;
     vColor = aColor;
     vTexCoord = aTexCoord;
 
@@ -328,7 +331,6 @@ uniform bool uCartoonToogleFlag, uTextureFlag;
 
 uniform sampler2D uTextureMap;
 
-vec4 Ci, Cs;
 vec4 ambient, diffuse, specular;
 vec4 spotCartoonShade, onedirCartoonShade;
 
@@ -336,6 +338,9 @@ in vec3 SpotlightN, SpotLightL, SpotLightE, spotlightpos;
 in vec3 DirectionalLightN, DirectionalLightL, DirectionalLightE, DirectionalLightPosition;
 in vec2 vTexCoord;
 out vec4 fColor;
+
+// in vec4 Ci, Cs;
+// in vec4 Ci_dir, Ci_spot, Cs_dir, Cs_spot;
 
 void main()
 {
@@ -347,6 +352,13 @@ void main()
     vec4 DirectionalLightAmbient = uAmbientProductforDirectionalLight;
     vec4 DirectionalLightDiffuse = DirectionalLightKd*uDiffuseProductforDirectionalLight;
     vec4 DirectionalLightSpecular = DirectionalLightKs*uSpecularProductforDirectionalLight;   
+    
+    /*** CARTOON SHADER ***/
+    // Ci_dir = uAmbientProductforGlobal + uAmbientProductforDirectionalLight + uDiffuseProductforDirectionalLight;
+    // Cs_dir = uAmbientProductforGlobal + uAmbientProductforDirectionalLight;
+    // Ci_spot = uAmbientProductforGlobal + uAmbientProductforSpotlight + uDiffuseProductforSpotlight;
+    // Cs_spot = uAmbientProductforGlobal + uAmbientProductforSpotlight;
+
     if(dot(DirectionalLightL, DirectionalLightN)<0.0){
         DirectionalLightSpecular = vec4(0.0,0.0,0.0,1.0);
     }
@@ -393,11 +405,16 @@ void main()
     }
 
     if(uTextureFlag) {
-        fColor = (texture(uTextureMap, vTexCoord)+ ambient + specular+diffuse - 0.7) - vec4(0.0, 0.0, 0.0, 1.0);
+        fColor = (texture(uTextureMap, vTexCoord)+ ambient + specular+diffuse - 0.7);
         fColor.a = 1.0;
     }
     else if (uCartoonToogleFlag) {
-        fColor = spotCartoonShade + onedirCartoonShade;
+        // if(dot(DirectionalLightL, DirectionalLightN) > 0.5) {
+        //     fColor += Ci_dir;
+        // }else {
+        //     fColor += Cs_dir;
+        // }
+        fColor = spotCartoonShade + onedirCartoonShade - 0.3;
         fColor.a = 1.0;
     }
     else {

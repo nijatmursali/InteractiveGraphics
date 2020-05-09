@@ -13,7 +13,7 @@ var thetaforObject = [0, 0, 0];
 var thetaforDirLight = [0, 0, 0];
 var thetaforSpotlight = [0, 0, 0];
 
-var near = 5.800000000000001;
+var near = 6.0;
 var far = 3.6;
 var radius = 4.0;
 var theta = 0.0;
@@ -66,7 +66,7 @@ var DiffuseforSpotlight = vec4(1.0, 1.0, 1.0, 1.0);
 var SpecularforSpotlight = vec4(1.0, 1.0, 1.0, 1.0);
 var LightCutOff = 20.2;
 
-//declared that from google 
+//declared that from the slides
 var AmbientforMaterial = vec4(1.0, 0.0, 1.0, 1.0);
 var DiffuseforMaterial = vec4(0.6, 1.0, 0.6, 1.0);
 var SpecularforMaterial = vec4(0.6, 1.0, 0.6, 1.0);
@@ -397,12 +397,6 @@ var getfromGraphics = function () {
 
     gl.uniform4fv(gl.getUniformLocation(program, "uPositionforSpotlight"), PositionforSpotlight);
     gl.uniform4fv(gl.getUniformLocation(program, "uPositionforDirectionalLight"), PositionforDirectionalLight);
-
-    gl.uniform4fv(gl.getUniformLocation(program, "uOneDirCi"), DirectionalLightCi);
-    gl.uniform4fv(gl.getUniformLocation(program, "uOneDirCs"), DirectionalLightCs);
-    gl.uniform4fv(gl.getUniformLocation(program, "uSpotCi"), SpotLightCi);
-    gl.uniform4fv(gl.getUniformLocation(program, "uSpotCs"), SpotLightCs);
-
     gl.uniform1f(gl.getUniformLocation(program, "uShininess"), materialShininess);
 
 }
