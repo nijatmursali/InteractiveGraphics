@@ -14,9 +14,9 @@
 
 <style>
     /* Customize the label (the container) */
-    #rotateobj,
-    #cartoontoggle,
-    #texturetoggle {
+    #RotateFlag,
+    #CartoonToggleFlag,
+    #TextureToogleFlag {
         display: block;
         position: relative;
         padding-left: 35px;
@@ -30,9 +30,9 @@
     }
 
     /* Hide the browser's default checkbox */
-    #rotateobj input,
-    #cartoontoggle input,
-    #texturetoggle input {
+    #RotateFlag input,
+    #CartoonToggleFlag input,
+    #TextureToogleFlag input {
         position: absolute;
         opacity: 0;
         cursor: pointer;
@@ -53,16 +53,16 @@
     }
 
     /* On mouse-over, add a grey background color */
-    #rotateobj:hover input~.checkmark,
-    #cartoontoggle:hover input~.checkmark1,
-    #texturetoggle:hover input~.checkmark2 {
+    #RotateFlag:hover input~.checkmark,
+    #CartoonToggleFlag:hover input~.checkmark1,
+    #TextureToogleFlag:hover input~.checkmark2 {
         background-color: #ccc;
     }
 
     /* When the checkbox is checked, add a blue background */
-    #rotateobj input:checked~.checkmark,
-    #cartoontoggle input:checked~.checkmark1,
-    #texturetoggle input:checked~.checkmark2 {
+    #RotateFlag input:checked~.checkmark,
+    #CartoonToggleFlag input:checked~.checkmark1,
+    #TextureToogleFlag input:checked~.checkmark2 {
         background-color: #2196F3;
     }
 
@@ -76,16 +76,16 @@
     }
 
     /* Show the checkmark when checked */
-    #rotateobj input:checked~.checkmark:after,
-    #cartoontoggle input:checked~.checkmark1:after,
-    #texturetoggle input:checked~.checkmark2:after {
+    #RotateFlag input:checked~.checkmark:after,
+    #CartoonToggleFlag input:checked~.checkmark1:after,
+    #TextureToogleFlag input:checked~.checkmark2:after {
         display: block;
     }
 
     /* Style the checkmark/indicator */
-    #rotateobj .checkmark:after,
-    #cartoontoggle .checkmark1:after,
-    #texturetoggle .checkmark2:after {
+    #RotateFlag .checkmark:after,
+    #CartoonToggleFlag .checkmark1:after,
+    #TextureToogleFlag .checkmark2:after {
         left: 9px;
         top: 5px;
         width: 5px;
@@ -247,65 +247,64 @@
 </style>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
-    #version 300 es
-
+#version 300 es
 
 in vec4 aColor;
 
-in  vec4 aPosition;
-in  vec3 aNormal;
+in vec4 aPosition;
+in vec3 aNormal;
 in vec2 aTexCoord;
 
 uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
-uniform mat4 uRotationMatrix, uSpotRotationMatrix;
+uniform mat4 uRotationMatrix, uRotMatrixforSpotlight;
 
-uniform vec4 uspotLightPosition, uoneDirLightPosition;
-uniform bool uRflag;
+uniform vec4 uPositionforSpotlight, uPositionforDirectionalLight;
+uniform bool uRotationFlag;
 
-vec3 spotpos, pos;
+vec3 SpotlightPosition, pos;
 
-out vec3 spotN, spotL, spotE, spotlightpos;
-out vec3 onedirN, onedirL, onedirE, onedirlightpos;
+out vec3 SpotlightN, SpotLightL, SpotLightE, spotlightpos;
+out vec3 DirectionalLightN, DirectionalLightL, DirectionalLightE, DirectionalLightPosition;
 out vec2 vTexCoord;
 
-out vec4 vColor;
+out vec4 vColor; //getting the colors 
 
 void main()
 {
     // One Directional Light vectors
     pos = -(uModelViewMatrix * aPosition).xyz;
-    onedirN = normalize((uModelViewMatrix*vec4(aNormal,0)).xyz);
+    DirectionalLightN = normalize((uModelViewMatrix*vec4(aNormal,0)).xyz);
  
-    vec3 onedirlightpos = (uRotationMatrix * uoneDirLightPosition).xyz;
+    vec3 DirectionalLightPosition = (uRotationMatrix * uPositionforDirectionalLight).xyz;
 
-    onedirL = normalize(onedirlightpos - pos);
-    onedirE = normalize(-pos); 
+    DirectionalLightL = normalize(DirectionalLightPosition - pos);
+    DirectionalLightE = normalize(-pos); 
 
     // Spotlight vectors
-    if (uRflag) {
-        spotpos = -(uModelViewMatrix * aPosition).xyz;
-        spotN = normalize((uModelViewMatrix*vec4(aNormal,0)).xyz);
+    if (uRotationFlag) { // if 
+        SpotlightPosition = -(uModelViewMatrix * aPosition).xyz;
+        SpotlightN = normalize((uModelViewMatrix*vec4(aNormal,0)).xyz);
     }
     else {
-        spotpos = -( uModelViewMatrix * aPosition).xyz;
-        spotN = normalize((uProjectionMatrix * uModelViewMatrix*vec4(aNormal,0)).xyz);
+        SpotlightPosition = -( uModelViewMatrix * aPosition).xyz;
+        SpotlightN = normalize((uProjectionMatrix * uModelViewMatrix*vec4(aNormal,0)).xyz);
     }
 
-    if (uRflag) {
-        spotlightpos = ( uSpotRotationMatrix * uspotLightPosition).xyz;
+    if (uRotationFlag) {
+        spotlightpos = ( uRotMatrixforSpotlight * uPositionforSpotlight).xyz;
     }
     else {
-        spotlightpos = ( uSpotRotationMatrix * uspotLightPosition).xyz;
+        spotlightpos = ( uRotMatrixforSpotlight * uPositionforSpotlight).xyz;
     }
    
-    spotL = normalize(spotlightpos - spotpos);
-    spotE = normalize(-spotpos); 
+    SpotLightL = normalize(spotlightpos - SpotlightPosition);
+    SpotLightE = normalize(-SpotlightPosition); 
 
     vColor = aColor;
     vTexCoord = aTexCoord;
 
-    if (uRflag) {
+    if (uRotationFlag) {
         gl_Position = uModelViewMatrix *aPosition; 
     }
     else {
@@ -315,17 +314,17 @@ void main()
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-    #version 300 es
+#version 300 es
 
 precision mediump float;
 in vec4 vColor;
-uniform vec4 uOneDirAmbientProduct, uOneDirDiffuseProduct, uOneDirSpecularProduct;
-uniform vec4 uSpotAmbientProduct, uSpotDiffuseProduct, uSpotSpecularProduct;
-uniform vec4 uglobalAmbientProduct;
+uniform vec4 uAmbientProductforDirectionalLight, uDiffuseProductforDirectionalLight, uSpecularProductforDirectionalLight;
+uniform vec4 uAmbientProductforSpotlight, uDiffuseProductforSpotlight, uSpecularProductforSpotlight;
+uniform vec4 uAmbientProductforGlobal;
 
 uniform float uShininess;
-uniform float lCutOff;
-uniform bool ucartoonflag, utextureflag;
+uniform float LightCutOff;
+uniform bool uCartoonToogleFlag, uTextureFlag;
 
 uniform sampler2D uTextureMap;
 
@@ -333,71 +332,71 @@ vec4 Ci, Cs;
 vec4 ambient, diffuse, specular;
 vec4 spotCartoonShade, onedirCartoonShade;
 
-in vec3 spotN, spotL, spotE, spotlightpos;
-in vec3 onedirN, onedirL, onedirE, onedirlightpos;
+in vec3 SpotlightN, SpotLightL, SpotLightE, spotlightpos;
+in vec3 DirectionalLightN, DirectionalLightL, DirectionalLightE, DirectionalLightPosition;
 in vec2 vTexCoord;
 out vec4 fColor;
 
 void main()
 {
     // One Directional Light Computation
-    vec3 onedirH = normalize(onedirL + onedirE);
+    vec3 DirectionalLightH = normalize(DirectionalLightL + DirectionalLightE);
 
-    float onedirKd=max(dot(onedirL, onedirN),0.0);    
-    float onedirKs=pow(max(dot(onedirN, onedirH),0.0), uShininess);
-    vec4 oneDirambient = uOneDirAmbientProduct;
-    vec4 oneDirposdiffuse = onedirKd*uOneDirDiffuseProduct;
-    vec4 oneDirposspecular = onedirKs*uOneDirSpecularProduct;   
-    if(dot(onedirL, onedirN)<0.0){
-        oneDirposspecular = vec4(0.0,0.0,0.0,1.0);
+    float DirectionalLightKd=max(dot(DirectionalLightL, DirectionalLightN),0.0);    
+    float DirectionalLightKs=pow(max(dot(DirectionalLightN, DirectionalLightH),0.0), uShininess);
+    vec4 DirectionalLightAmbient = uAmbientProductforDirectionalLight;
+    vec4 DirectionalLightDiffuse = DirectionalLightKd*uDiffuseProductforDirectionalLight;
+    vec4 DirectionalLightSpecular = DirectionalLightKs*uSpecularProductforDirectionalLight;   
+    if(dot(DirectionalLightL, DirectionalLightN)<0.0){
+        DirectionalLightSpecular = vec4(0.0,0.0,0.0,1.0);
     }
 
     // Spotlight Computation
-    vec3 spotH = normalize(spotN + spotE);
+    vec3 spotH = normalize(SpotlightN + SpotLightE);
 
-    float Kd=max(dot(spotL, spotN),0.0);    
-    float Ks=pow(max(dot(spotN, spotH),0.0), uShininess);
+    float Kd=max(dot(SpotLightL, SpotlightN),0.0);    
+    float Ks=pow(max(dot(SpotlightN, spotH),0.0), uShininess);
 
-    vec4 spotDirambient = uSpotAmbientProduct;
-    vec4 spotDirposdiffuse = Kd*uSpotDiffuseProduct;
-    vec4 spotDirposspecular = Ks*uSpotSpecularProduct;   
-    if(dot(spotL, spotN)<0.0){
-        spotDirposspecular = vec4(0.0,0.0,0.0,1.0);
+    vec4 SpotLightsAmbient = uAmbientProductforSpotlight;
+    vec4 SpotLightsDiffuse = Kd*uDiffuseProductforSpotlight;
+    vec4 SpotLightsSpecular = Ks*uSpecularProductforSpotlight;   
+    if(dot(SpotLightL, SpotlightN) < 0.0){
+        SpotLightsSpecular = vec4(0.0,0.0,0.0,1.0);
     }
-    float dotdir = dot(normalize(spotL + spotE), -spotlightpos);
+    float dotDirectionalLight = dot(normalize(SpotLightL + SpotLightE), -spotlightpos);
     
-    if (dotdir >= lCutOff) {
-        ambient =  oneDirambient + spotDirambient;
-        diffuse =  oneDirposdiffuse + spotDirposdiffuse;
-        specular = oneDirposspecular + spotDirposspecular; 
+    if (dotDirectionalLight >= LightCutOff) {
+        ambient =  DirectionalLightAmbient + SpotLightsAmbient;
+        diffuse =  DirectionalLightDiffuse + SpotLightsDiffuse;
+        specular = DirectionalLightSpecular + SpotLightsSpecular; 
         
-        if (max(dot(spotL, spotN), 0.0) >= 0.5) {spotCartoonShade =  uSpotAmbientProduct + uSpotDiffuseProduct;}
-        else {spotCartoonShade =  uSpotAmbientProduct;}
+        if (max(dot(SpotLightL, SpotlightN), 0.0) >= 0.5) {spotCartoonShade =  uAmbientProductforSpotlight + uDiffuseProductforSpotlight;}
+        else {spotCartoonShade =  uAmbientProductforSpotlight;}
 
-        if (max(dot(onedirL, onedirN), 0.0) >= 0.5) {onedirCartoonShade =  uOneDirAmbientProduct + uOneDirDiffuseProduct;}
-        else {onedirCartoonShade =  uOneDirAmbientProduct;}
+        if (max(dot(DirectionalLightL, DirectionalLightN), 0.0) >= 0.5) {onedirCartoonShade =  uAmbientProductforDirectionalLight + uDiffuseProductforDirectionalLight;}
+        else {onedirCartoonShade =  uAmbientProductforDirectionalLight;}
 
-        spotCartoonShade = spotCartoonShade + uglobalAmbientProduct;
-        onedirCartoonShade = onedirCartoonShade + uglobalAmbientProduct;
+        spotCartoonShade = spotCartoonShade + uAmbientProductforGlobal;
+        onedirCartoonShade = onedirCartoonShade + uAmbientProductforGlobal;
 
     }
     else {
-        ambient =  oneDirambient;
-        diffuse = oneDirposdiffuse;
-        specular = oneDirposspecular; 
+        ambient =  DirectionalLightAmbient;
+        diffuse = DirectionalLightDiffuse;
+        specular = DirectionalLightSpecular; 
         
-        if (max(dot(onedirL, onedirN), 0.0) >= 0.5) {onedirCartoonShade = uglobalAmbientProduct + uOneDirAmbientProduct + uOneDirDiffuseProduct;}
-        else {onedirCartoonShade = uglobalAmbientProduct + uOneDirAmbientProduct;}
+        if (max(dot(DirectionalLightL, DirectionalLightN), 0.0) >= 0.5) {onedirCartoonShade = uAmbientProductforGlobal + uAmbientProductforDirectionalLight + uDiffuseProductforDirectionalLight;}
+        else {onedirCartoonShade = uAmbientProductforGlobal + uAmbientProductforDirectionalLight;}
         
         spotCartoonShade = vec4(0.0, 0.0, 0.0, 0.0);
 
     }
 
-    if(utextureflag) {
+    if(uTextureFlag) {
         fColor = (texture(uTextureMap, vTexCoord)+ ambient + specular+diffuse - 0.7) - vec4(0.0, 0.0, 0.0, 1.0);
         fColor.a = 1.0;
     }
-    else if (ucartoonflag) {
+    else if (uCartoonToogleFlag) {
         fColor = spotCartoonShade + onedirCartoonShade;
         fColor.a = 1.0;
     }
@@ -448,14 +447,14 @@ void main()
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
                             aria-labelledby="v-pills-home-tab">
                             <p class="h1"> Rotation Toggle Button </p>
-                            <label id="rotateobj">
+                            <label id="RotateFlag">
                                 <input type="checkbox"><span class="checkmark"></span>
                             </label>
-                            <button id="xObjButton" class="btn button primary-button mr-4 text-uppercase">Rotate
+                            <button id="rotateObjectinXrot" class="btn button primary-button mr-4 text-uppercase">Rotate
                                 X</button>
-                            <button id="yObjButton" class="btn button primary-button mr-4 text-uppercase">Rotate
+                            <button id="rotateObjectinYrot" class="btn button primary-button mr-4 text-uppercase">Rotate
                                 Y</button>
-                            <button id="zObjButton" class="btn button primary-button mr-4 text-uppercase">Rotate
+                            <button id="rotateObjectinZrot" class="btn button primary-button mr-4 text-uppercase">Rotate
                                 Z</button>
                         </div>
                         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
@@ -471,15 +470,6 @@ void main()
                                     <button class="btn button primary-button text-uppercase" id="incFar" style="padding-left: 49px;">Increase Far</button>
                                     <button class="btn button primary-button text-uppercase" id="decFar" style="padding-left: 48px;">Decrease Far</button>
                                 </div>
-                                <!-- <div class="selecteurPrix">
-                                    <p class="h4">Far</p>
-                                    <div class="PrixMin">0.01</div>
-                                    <div class="range-slider">
-                                        <input class="input-range" id="incFar" type="range" min="0.01" max="3.0"
-                                            step="0.01" value="0.1">
-                                    </div>
-                                    <div class="PrixMin">+3</div>
-                                </div> -->
 
                                 <div class="selecteurPrix">
                                     <p class="h4">Field of View</p>
@@ -495,6 +485,7 @@ void main()
                             <p class="h1" style="margin-top: 20px; margin-bottom: 10px;"> Viewer Position </p>
 
                             <div class="selecteurPrix">
+                                <br>
                                 <p class="h4">Theta</p>
                                 <div class="PrixMin">0</div>
                                 <div class="range-slider">
@@ -505,16 +496,18 @@ void main()
                             </div>
 
                             <div class="selecteurPrix">
+                                <br>
                                 <p class="h4">Phi</p>
                                 <div class="PrixMin">0</div>
                                 <div class="range-slider">
-                                    <input class="input-range" id="incPhi" type="range" min="0" max="360.0"
+                                    <input class="input-range" id="incPhi" type="range" min="0.0" max="360.0"
                                         step="10" value="2">
                                 </div>
                                 <div class="PrixMin">+360</div>
                             </div>
 
                             <div class="selecteurPrix">
+                                <br>
                                 <p class="h4">Radius</p>
                                 <div class="PrixMin">0</div>
                                 <div class="range-slider">
@@ -529,13 +522,11 @@ void main()
                             aria-labelledby="v-pills-messages-tab">
 
                             <p class="h1"> Light Position</p>
-
-
                             <div class="selecteurPrix">
                                 <p class="h4">Rotation X</p>
                                 <div class="PrixMin">-180</div>
                                 <div class="range-slider">
-                                    <input class="input-range" id="lightx" type="range" min="-180.0" max="180.0"
+                                    <input class="input-range" id="DirLightX" type="range" min="-180.0" max="180.0"
                                         step="0.1" value="4">
                                 </div>
                                 <div class="PrixMin">+180</div>
@@ -545,7 +536,7 @@ void main()
                                 <p class="h4">Rotation Y</p>
                                 <div class="PrixMin">-180</div>
                                 <div class="range-slider">
-                                    <input class="input-range" id="lighty" type="range" min="-180.0" max="180.0"
+                                    <input class="input-range" id="DirLightY" type="range" min="-180.0" max="180.0"
                                         step="0.1" value="4">
                                 </div>
                                 <div class="PrixMin">+180</div>
@@ -555,7 +546,7 @@ void main()
                                 <p class="h4">Rotation Z</p>
                                 <div class="PrixMin">-180</div>
                                 <div class="range-slider">
-                                    <input class="input-range" id="lightz" type="range" min="-180.0" max="180.0"
+                                    <input class="input-range" id="DirLightZ" type="range" min="-180.0" max="180.0"
                                         step="0.1" value="4">
                                 </div>
                                 <div class="PrixMin">+180</div>
@@ -566,7 +557,7 @@ void main()
                                 <p class="h4">Rotation X</p>
                                 <div class="PrixMin">-180</div>
                                 <div class="range-slider">
-                                    <input class="input-range" id="spotlightx" type="range" min="-180.0" max="180.0"
+                                    <input class="input-range" id="SpotlightX" type="range" min="-180.0" max="180.0"
                                         step="0.1" value="4">
                                 </div>
                                 <div class="PrixMin">+180</div>
@@ -576,7 +567,7 @@ void main()
                                 <p class="h4">Rotation Y</p>
                                 <div class="PrixMin">-180</div>
                                 <div class="range-slider">
-                                    <input class="input-range" id="spotlighty" type="range" min="-180.0" max="180.0"
+                                    <input class="input-range" id="SpotlightY" type="range" min="-180.0" max="180.0"
                                         step="0.1" value="4">
                                 </div>
                                 <div class="PrixMin">+180</div>
@@ -596,7 +587,7 @@ void main()
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
                             aria-labelledby="v-pills-settings-tab">
                             <p class="h1"> Cartoon Shading Toggle Button </p>
-                            <label class="switch" id="cartoontoggle">
+                            <label class="switch" id="CartoonToggleFlag">
                                 <input type="checkbox"><span class="checkmark1"></span>
                             </label>
                             <br />
@@ -604,7 +595,7 @@ void main()
                         </div>
                         <div class="tab-pane fade" id="v-pills-test" role="tabpanel" aria-labelledby="v-pills-test-tab">
                             <p class="h1"> Texture Toggle Button </p>
-                            <label class="switch" id="texturetoggle">
+                            <label class="switch" id="TextureToogleFlag">
                                 <input type="checkbox"><span class="checkmark2"></span>
                             </label>
                             <br />
