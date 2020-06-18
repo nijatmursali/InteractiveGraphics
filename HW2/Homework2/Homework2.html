@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Homework 2 Nijat Mursali</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!-- ADD STYLING -->
+    <style>
+        body {
+            margin-top: 50px;
+        }
+        /* BUTTONS */
+
+        .button {
+            font: normal 500 16px/20px;
+            font-family: 'Roboto', sans-serif;
+            padding: .8rem 2.2rem;
+            position: relative;
+            border: 3px solid transparent;
+            border-radius: 4px;
+        }
+
+        .button.primary-button {
+            background: linear-gradient(90deg, #845EC2 0%, #242582 100%);
+            background-clip: padding-box;
+            color: whitesmoke;
+            transition: all .6s ease;
+            box-shadow: 0px 10px 30px rgba(57, 56, 61, 0.205);
+        }
+
+        .button.primary-button:hover {
+            background: whitesmoke;
+            background-clip: padding-box;
+            color: black;
+        }
+
+        .button.primary-button::after {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            bottom: -2px;
+            right: -2px;
+            background: linear-gradient(90deg, #845EC2 0%, #242582 100%);
+            content: ' ';
+            z-index: -1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<script id="vertex-shader" type="x-shader/x-vertex">
+#version 300 es
+
+in vec4 aPosition;
+in vec4 aColor; 
+
+
+out vec4 vNormal;
+out vec4 vColor;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+//add booleans here 
+
+//add texture as well 
+in vec2 aTexCoord;
+out vec2 vTexCoord;
+
+void main()
+{
+    vTexCoord = aTexCoord;
+    gl_Position = projectionMatrix * modelViewMatrix * aPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+#version 300 es
+
+precision mediump float;
+//samplers
+uniform sampler2D uTextureMapTorso;
+uniform sampler2D uTextureMapHead;
+//add booleans here 
+in vec2 vTexCoord;
+out vec4 fColor;
+
+//booleans
+uniform bool TorsoFlag, HeadFlag, FloorFlag, TreeFlag, TreeHeadFlag;
+
+void main()
+{
+
+    if (FloorFlag) { 
+        fColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+    
+    else if(TreeFlag) {
+        fColor = vec4(0.7, 0.4, 0.0, 1.0);
+    }
+    else if(TreeHeadFlag){
+        fColor = vec4(0.1, 0.5, 0.0, 1.0);
+    }
+    
+    else if (TorsoFlag) {
+        //fColor = vec4(1.0, 0.0, 0.0, 1.0);
+        fColor = texture(uTextureMapTorso, vTexCoord);
+        fColor.a = 1.0;  
+    }
+    else if(HeadFlag) {
+        fColor = texture(uTextureMapHead, vTexCoord);
+        fColor.a = 1.0;  
+    }
+
+    else {
+        fColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+}
+</script>
+
+<script type="text/javascript" src="../Common/InitShaders.js"></script>
+<script type="text/javascript" src="../Common/MVnew.js"></script>
+<script type="text/javascript" src="./Homework2.js"></script>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-3 text-center"><button id="animate" class="btn button primary-button text-uppercase">Disable animation</button></div>
+            <div class="col-3 text-center"><button class="btn button primary-button text-uppercase" onClick="window.location.reload();">RESET</button></div>
+            <div class="col-3 text-center"><button id="increaseAlpha" class="btn button primary-button text-uppercase">Increase Alpha</button></div>
+            <div class="col-3"><button id="decreaseAlpha" class="btn button primary-button text-uppercase">Decrease Alpha</button></div>
+        </div>
+    </div>
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-12">
+                <!-- ADD CANVAS HERE -->
+                <canvas id="gl-canvas" width="1600" height="1500">
+                    Oops ... your browser doesn't support the HTML5 canvas element
+                </canvas>
+            </div>
+
+
+            <div class="col-2">
+                <!-- ADD BUTTONS HERE -->
+                
+                
+                
+                
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</body>
+
+<img id = "textures" src="./textures/bear_tex.jpg" hidden>
+<img id = "headTexture" src="./textures/head.jpeg" hidden>
+
+<!-- ########################BOOTSTRAP CDNS ######################## -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+</script>
+
+</html>
